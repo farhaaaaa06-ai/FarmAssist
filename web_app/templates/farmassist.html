@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% block pagetitle %}
+FarmAssist - Crop Care & Remedy Advisor
+{% endblock pagetitle %}
+
+{% block body %}
+<!-- Page Header -->
+<div style="background: linear-gradient(180deg, #062b1a 0%, #0c3824 100%); padding: 3.5rem 1.5rem 4.5rem; color: white; text-align: center;">
+    <div style="max-width: 750px; margin: 0 auto;">
+        <span class="pill-badge"><i class="fa-solid fa-flask-vial"></i> <span data-i18n="farmassist_badge">FarmAssist Agronomy Guide</span></span>
+        <h1 style="font-size: 2.8rem; font-weight: 800; color: white; margin-bottom: 0.85rem; letter-spacing: -0.02em;" data-i18n="farmassist_title">
+            FarmAssist: Crop Care & Remedy Advisor
+        </h1>
+        <p style="font-size: 1.15rem; color: #cbd5e1; line-height: 1.6;" data-i18n="farmassist_desc">
+            Explore expert-curated bio-fungicides, systemic bactericides, micronutrient boosters, and organic crop care protocols.
+        </p>
+    </div>
+</div>
+
+<div class="content-container" style="margin-top: -2rem;">
+    <!-- Filter & Search Bar -->
+    <div class="farmassist-filter-bar market-filter-bar">
+        <div class="search-input-box">
+            <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8;"></i>
+            <input type="text" id="farmassist-search-input" placeholder="Search remedies by disease, crop, or chemical active..." data-i18n-placeholder="farmassist_search_placeholder">
+        </div>
+        
+        <div class="farmassist-tabs market-tabs">
+            <button type="button" class="farmassist-tab-btn market-tab-btn active" data-filter="all" data-i18n="tab_all">All Remedies</button>
+            <button type="button" class="farmassist-tab-btn market-tab-btn" data-filter="healthy" data-i18n="tab_healthy">Fertilizers & Vigor</button>
+            <button type="button" class="farmassist-tab-btn market-tab-btn" data-filter="diseased" data-i18n="tab_diseased">Disease Remedies</button>
+        </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="farmassist-grid market-grid" id="products-container">
+        {% for index in range(0, supplement_name | length) %}
+        {% if index != 4 %}
+        {% set is_healthy = index in [3, 5, 7, 11, 15, 18, 20, 23, 24, 25, 28, 38] %}
+        <div class="product-card" data-category="{% if is_healthy %}healthy{% else %}diseased{% endif %}" data-name="{{ supplement_name[index] | lower }}" data-disease="{{ disease[index] | lower }}">
+            <div class="product-img-wrap">
+                <img src="{{ supplement_image[index] }}" alt="{{ supplement_name[index] }}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1585336261026-c2929e7102ce?auto=format&fit=crop&w=400&q=80'">
+            </div>
+            
+            <div class="product-details">
+                <div>
+                    {% if is_healthy %}
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <span class="product-target" style="color: #059669;">
+                            <i class="fa-solid fa-leaf"></i> <span data-i18n="tag_nutrition">Crop Nutrition</span>
+                        </span>
+                        <span style="font-size: 0.75rem; background: #ecfdf5; color: #059669; padding: 0.2rem 0.6rem; border-radius: 999px; font-weight: 700;" data-i18n="badge_healthy">Healthy</span>
+                    </div>
+                    {% else %}
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <span class="product-target" style="color: #dc2626;">
+                            <i class="fa-solid fa-biohazard"></i> <span data-i18n="tag_treatment">Disease Treatment</span>
+                        </span>
+                        <span style="font-size: 0.75rem; background: #fef2f2; color: #dc2626; padding: 0.2rem 0.6rem; border-radius: 999px; font-weight: 700;" data-i18n="badge_remedy">Remedy</span>
+                    </div>
+                    {% endif %}
+                    
+                    <span style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.35rem;">
+                        <strong data-i18n="target_label">Target:</strong> {{ disease[index] }}
+                    </span>
+                    
+                    <h4 class="product-name">{{ supplement_name[index] }}</h4>
+                </div>
+                
+                <a href="{{ buy[index] }}" target="_blank" rel="noopener noreferrer" class="btn-buy-product">
+                    <i class="fa-solid fa-book-medical"></i> <span data-i18n="btn_buy">View Remedy Guide</span>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    
+    <!-- Empty Search State -->
+    <div id="no-products-msg" style="display: none; text-align: center; padding: 4rem 1.5rem;">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: #f1f5f9; color: #64748b; font-size: 1.75rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+            <i class="fa-solid fa-filter-circle-xmark"></i>
+        </div>
+        <h3 style="font-size: 1.35rem; color: var(--text-heading); margin-bottom: 0.5rem;" data-i18n="no_products_title">No Matching Remedies Found</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem;" data-i18n="no_products_desc">Try adjusting your keywords or clearing the category filter.</p>
+    </div>
+</div>
+
+<!-- Interactive Search and Filter Script -->
+<script>
+    const searchInput = document.getElementById('farmassist-search-input') || document.getElementById('market-search-input');
+    const tabButtons = document.querySelectorAll('.farmassist-tab-btn, .market-tab-btn');
+    const productCards = document.querySelectorAll('.product-card');
+    const noProductsMsg = document.getElementById('no-products-msg');
+
+    let currentFilter = 'all';
+
+    function filterProducts() {
+        const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        let visibleCount = 0;
+
+        productCards.forEach(card => {
+            const category = card.getAttribute('data-category');
+            const name = card.getAttribute('data-name');
+            const disease = card.getAttribute('data-disease');
+
+            const matchesCategory = (currentFilter === 'all') || (category === currentFilter);
+            const matchesQuery = !query || name.includes(query) || disease.includes(query);
+
+            if (matchesCategory && matchesQuery) {
+                card.style.display = 'flex';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        if (noProductsMsg) {
+            noProductsMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', filterProducts);
+    }
+
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.getAttribute('data-filter');
+            filterProducts();
+        });
+    });
+</script>
+{% endblock body %}

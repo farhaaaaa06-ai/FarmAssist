@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-Powered Plant Disease Detection & Crop Health Diagnostic Platform. Instant diagnosis and treatment recommendations for 38+ plant conditions across 14 crops.">
+    <meta name="keywords" content="plant disease detection, crop health, leaf diagnosis, agricultural AI, plant pathology">
+    <title>{% block pagetitle %}Plant Health & Disease Diagnostics{% endblock pagetitle %} | FarmAssist</title>
+    
+    <!-- Google Fonts with Kannada and Devanagari support -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Kannada:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons via CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom Design System -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Top Navigation -->
+    <header class="site-navbar">
+        <div class="nav-container">
+            <a href="/" class="brand-logo" id="brand-link">
+                <div class="brand-icon-wrapper">
+                    <i class="fa-solid fa-leaf"></i>
+                </div>
+                <span data-i18n="brand_name">FarmAssist</span>
+            </a>
+            
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <!-- Multilingual Switcher -->
+                <div class="lang-switcher-wrapper" id="lang-switcher-container">
+                    <button type="button" class="lang-trigger-btn" id="lang-menu-btn" aria-label="Change language">
+                        <i class="fa-solid fa-globe"></i>
+                        <span id="current-lang-label">English</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; opacity: 0.7;"></i>
+                    </button>
+                    <div class="lang-dropdown-menu" id="lang-dropdown">
+                        <button type="button" class="lang-opt-btn" data-lang="en">
+                            <span>English</span>
+                            <span class="lang-check"><i class="fa-solid fa-check"></i></span>
+                        </button>
+                        <button type="button" class="lang-opt-btn" data-lang="kn">
+                            <span>ಕನ್ನಡ (Kannada)</span>
+                            <span class="lang-check"><i class="fa-solid fa-check"></i></span>
+                        </button>
+                        <button type="button" class="lang-opt-btn" data-lang="hi">
+                            <span>हिन्दी (Hindi)</span>
+                            <span class="lang-check"><i class="fa-solid fa-check"></i></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Voice Assistant Trigger -->
+                <button type="button" class="nav-mic-btn" id="nav-voice-assistant-btn" title="Voice Assistant / ಧ್ವನಿ ಸಹಾಯಕ / आवाज़ सहायक" aria-label="Voice Assistant">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
+
+                <button class="mobile-toggle" id="mobile-menu-btn" aria-label="Toggle navigation menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+            
+            <ul class="nav-links" id="nav-menu">
+                <li>
+                    <a href="/" class="nav-item-link {% if request.path == '/' %}active{% endif %}" id="nav-home">
+                        <i class="fa-solid fa-house"></i> <span data-i18n="nav_home">Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/index" class="nav-item-link {% if request.path == '/index' %}active{% endif %}" id="nav-scan-leaf">
+                        <i class="fa-solid fa-camera-retro"></i> <span data-i18n="nav_scan_leaf">Scan Leaf</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/contact" class="nav-item-link {% if request.path == '/contact' %}active{% endif %}" id="nav-support">
+                        <i class="fa-solid fa-circle-question"></i> <span data-i18n="nav_support">Help & Guides</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Main Content Injection -->
+    <main class="main-wrapper">
+        {% block body %}
+        {% endblock body %}
+    </main>
+
+    <!-- Professional Unbranded Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.85rem;">
+                        <div class="brand-icon-wrapper" style="width: 32px; height: 32px; font-size: 0.9rem;">
+                            <i class="fa-solid fa-leaf"></i>
+                        </div>
+                        <h4 style="margin: 0; color: white; font-family: 'Outfit', sans-serif;" data-i18n="brand_name">FarmAssist</h4>
+                    </div>
+                    <p data-i18n="footer_desc">
+                        High-precision deep learning platform engineered to detect 38+ plant leaf pathogens, bacterial spots, and nutrient deficiencies to safeguard crop yields and empower sustainable agronomy.
+                    </p>
+                </div>
+                
+                <div class="footer-col">
+                    <h5 data-i18n="footer_quick_links">Quick Navigation</h5>
+                    <ul>
+                        <li><a href="/" id="footer-link-home"><i class="fa-solid fa-angle-right"></i> <span data-i18n="nav_home">Home Overview</span></a></li>
+                        <li><a href="/index" id="footer-link-diagnose"><i class="fa-solid fa-angle-right"></i> <span data-i18n="nav_scan_leaf">Scan Leaf</span></a></li>
+                        <li><a href="/contact" id="footer-link-contact"><i class="fa-solid fa-angle-right"></i> <span data-i18n="nav_support">FAQ & Diagnostics Support</span></a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h5 data-i18n="footer_diagnostics_title">Supported Diagnostics</h5>
+                    <ul>
+                        <li><span style="color: #cbd5e1; font-size: 0.88rem;"><i class="fa-solid fa-circle-check" style="color: #10b981; margin-right: 6px;"></i> <span data-i18n="footer_stat1">Agricultural Crops</span></span></li>
+                        <li><span style="color: #cbd5e1; font-size: 0.88rem;"><i class="fa-solid fa-circle-check" style="color: #10b981; margin-right: 6px;"></i> <span data-i18n="footer_stat2">Disease Categories</span></span></li>
+                        <li><span style="color: #cbd5e1; font-size: 0.88rem;"><i class="fa-solid fa-circle-check" style="color: #10b981; margin-right: 6px;"></i> <span data-i18n="footer_stat3">Instant Cultural Advice</span></span></li>
+                        <li><span style="color: #cbd5e1; font-size: 0.88rem;"><i class="fa-solid fa-circle-check" style="color: #10b981; margin-right: 6px;"></i> <span data-i18n="footer_stat4">Organic & Bio Controls</span></span></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p data-i18n="footer_copyright">&copy; 2026 FarmAssist. All rights reserved.</p>
+                <div style="display: flex; gap: 1.5rem;">
+                    <span style="color: #64748b;" data-i18n="footer_engine_tag">AI Powered Agronomy &bull; Model Architecture: Deep Convolutional Neural Network</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Translations & Voice Interface Logic -->
+    <script src="{{ url_for('static', filename='js/translations.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/voice.js') }}"></script>
+    <script>
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const navMenu = document.getElementById('nav-menu');
+        if (menuBtn && navMenu) {
+            menuBtn.addEventListener('click', () => {
+                navMenu.classList.toggle('open');
+            });
+        }
+
+        // Language dropdown toggle
+        const langBtn = document.getElementById('lang-menu-btn');
+        const langDropdown = document.getElementById('lang-dropdown');
+        if (langBtn && langDropdown) {
+            langBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                langDropdown.classList.toggle('show');
+            });
+            document.addEventListener('click', () => {
+                langDropdown.classList.remove('show');
+            });
+        }
+    </script>
+</body>
+</html>

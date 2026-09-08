@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block pagetitle %}
+Diagnostic Result - {{ title }}
+{% endblock pagetitle %}
+
+{% block body %}
+{% set is_healthy = pred in [3, 5, 7, 11, 15, 18, 20, 23, 24, 25, 28, 38] %}
+{% set is_bg = pred == 4 %}
+
+<!-- Hero Result Banner -->
+<div class="diagnosis-banner">
+    <div class="diagnosis-header">
+        <div>
+            {% if is_healthy %}
+                <span class="diagnosis-status-pill status-healthy">
+                    <i class="fa-solid fa-circle-check"></i> <span data-i18n="res_healthy_badge">Healthy Specimen Verified</span>
+                </span>
+            {% elif is_bg %}
+                <span class="diagnosis-status-pill" style="background: rgba(245, 158, 11, 0.2); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.4);">
+                    <i class="fa-solid fa-triangle-exclamation"></i> <span data-i18n="res_bg_badge">Non-Foliar Background</span>
+                </span>
+            {% else %}
+                <span class="diagnosis-status-pill status-diseased">
+                    <i class="fa-solid fa-biohazard"></i> <span data-i18n="res_diseased_badge">Pathogen Detected</span>
+                </span>
+            {% endif %}
+            
+            <h1 class="diagnosis-title" id="diag-title">{{ title }}</h1>
+            <p style="color: #cbd5e1; margin-top: 0.35rem; font-size: 1.05rem;">
+                <span data-i18n="res_confidence_sub">Neural classification index: #</span>{{ pred }} &bull; High Confidence Diagnostic Match
+            </p>
+        </div>
+        
+        <div>
+            <a href="/index" class="btn-secondary" style="background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3);">
+                <i class="fa-solid fa-rotate-left"></i> <span data-i18n="res_btn_another">Diagnose Another Leaf</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="content-container" style="padding-top: 1.5rem;">
+    <div class="result-layout">
+        <!-- Left Column: Visual Reference & Recommended Supplement -->
+        <div>
+            <!-- Reference Image Card -->
+            <div class="result-card">
+                <h4 style="font-size: 1.15rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-image" style="color: var(--primary);"></i> <span data-i18n="res_ref_title">Reference Specimen</span>
+                </h4>
+                <div class="result-image-box">
+                    <img id="diag-image" src="{{ image_url }}" alt="{{ title }} reference image" onerror="this.src='https://images.unsplash.com/photo-1592150621744-aca64f48394a?auto=format&fit=crop&w=600&q=80'">
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin: 0;" data-i18n="res_ref_desc">
+                    Archived Pathology Verification Sample
+                </p>
+            </div>
+
+            <!-- Treatment Supplement / Fertilizer Card (if not background) -->
+            {% if not is_bg and sname %}
+            <div class="supplement-card" id="supplement-card">
+                <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--primary); letter-spacing: 0.05em;">
+                    {% if is_healthy %}
+                        <i class="fa-solid fa-seedling"></i> <span data-i18n="res_nutrition_title">Recommended Crop Nutrition</span>
+                    {% else %}
+                        <i class="fa-solid fa-prescription-bottle-medical"></i> <span data-i18n="res_treatment_title">Targeted Treatment Remedy</span>
+                    {% endif %}
+                </span>
+                
+                <h4 style="font-size: 1.1rem; color: var(--text-heading); margin-top: 0.35rem; margin-bottom: 0.85rem;" id="diag-sname">
+                    {{ sname }}
+                </h4>
+                
+                {% if simage %}
+                <img id="diag-simage" src="{{ simage }}" alt="{{ sname }}" onerror="this.style.display='none'">
+                {% endif %}
+                
+                <div style="margin-top: 1.25rem;">
+                    <a id="diag-buy-link" href="{{ buy_link }}" target="_blank" rel="noopener noreferrer" class="btn-primary" style="width: 100%; justify-content: center; font-size: 0.95rem;">
+                        <i class="fa-solid fa-bag-shopping"></i> <span data-i18n="res_view_product">View Product Details</span>
+                    </a>
+                    <a href="/farmassist" class="btn-secondary" style="width: 100%; justify-content: center; font-size: 0.9rem; margin-top: 0.65rem;" id="diag-farmassist-link">
+                        <i class="fa-solid fa-seedling"></i> <span data-i18n="nav_farmassist">FarmAssist Remedies</span>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Column: Clinical Pathology Details & Cultural Management -->
+        <div>
+            <!-- Detailed Description -->
+            <div class="result-card">
+                <h3 style="font-size: 1.35rem; margin-bottom: 1.25rem; color: var(--text-heading); display: flex; align-items: center; gap: 0.65rem;">
+                    {% if is_healthy %}
+                        <i class="fa-solid fa-heart-pulse" style="color: #10b981;"></i> <span data-i18n="res_health_overview">Crop Health Profile</span>
+                    {% else %}
+                        <i class="fa-solid fa-virus" style="color: #ef4444;"></i> <span data-i18n="res_symptom_overview">Pathology & Symptom Overview</span>
+                    {% endif %}
+                </h3>
+                
+                <div id="diag-desc" style="color: var(--text-body); font-size: 1rem; line-height: 1.7; white-space: pre-line;">
+                    {{ desc }}
+                </div>
+            </div>
+
+            <!-- Management & Prevention Steps -->
+            <div class="result-card">
+                <h3 style="font-size: 1.35rem; margin-bottom: 1.25rem; color: var(--text-heading); display: flex; align-items: center; gap: 0.65rem;">
+                    {% if is_healthy %}
+                        <i class="fa-solid fa-award" style="color: #10b981;"></i> <span data-i18n="res_vigor_title">Best Practices for Sustained Vigor</span>
+                    {% else %}
+                        <i class="fa-solid fa-shield-virus" style="color: #059669;"></i> <span data-i18n="res_management_title">Actionable Management & Cultural Controls</span>
+                    {% endif %}
+                </h3>
+                
+                <div id="diag-prevent" style="color: var(--text-body); font-size: 1rem; line-height: 1.7; white-space: pre-line;">
+                    {{ prevent }}
+                </div>
+
+                <div style="margin-top: 2rem; padding: 1.25rem; background: #f8fafc; border-radius: var(--radius-md); border-left: 4px solid var(--primary); display: flex; align-items: flex-start; gap: 1rem;">
+                    <i class="fa-solid fa-circle-info" style="color: var(--primary); font-size: 1.25rem; margin-top: 0.15rem;"></i>
+                    <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0;">
+                        <strong data-i18n="res_advisory_title">Agronomic Advisory:</strong> <span data-i18n="res_advisory_text">Always follow localized dosage rates when applying sprays, and rotate chemical modes of action (FRAC codes) to prevent pathogen resistance development.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Embedded Multilingual Report Data for Instant Switching -->
+<script id="reports-data" type="application/json">{{ reports_json | safe }}</script>
+
+<script>
+    const reportsPayload = JSON.parse(document.getElementById('reports-data').textContent || '{}');
+    const titleEl = document.getElementById('diag-title');
+    const descEl = document.getElementById('diag-desc');
+    const preventEl = document.getElementById('diag-prevent');
+    const snameEl = document.getElementById('diag-sname');
+    const simageEl = document.getElementById('diag-simage');
+    const buyLinkEl = document.getElementById('diag-buy-link');
+
+    // Update Report Text according to Active Language
+    function updateReportLanguage(lang) {
+        if (reportsPayload && reportsPayload[lang]) {
+            const data = reportsPayload[lang];
+            if (titleEl) titleEl.textContent = data.name;
+            if (descEl) descEl.textContent = data.desc;
+            if (preventEl) preventEl.textContent = data.prevent;
+            if (snameEl && data.sname) snameEl.textContent = data.sname;
+            if (simageEl && data.simage) simageEl.src = data.simage;
+            if (buyLinkEl && data.buy_link) buyLinkEl.href = data.buy_link;
+        }
+    }
+
+    // Hook into global language changes
+    document.addEventListener('DOMContentLoaded', () => {
+        const activeLang = localStorage.getItem('farmassist_lang') || localStorage.getItem('flora_lang') || 'en';
+        updateReportLanguage(activeLang);
+
+        // Also listen to clicks on language switcher buttons
+        document.querySelectorAll('.lang-opt-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetLang = btn.getAttribute('data-lang');
+                setTimeout(() => updateReportLanguage(targetLang), 50);
+            });
+        });
+    });
+</script>
+{% endblock body %}

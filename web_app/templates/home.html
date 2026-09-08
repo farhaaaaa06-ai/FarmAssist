@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+
+{% block pagetitle %}
+Intelligent Plant Health & Disease Diagnostics
+{% endblock pagetitle %}
+
+{% block body %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-glow-1"></div>
+    <div class="hero-glow-2"></div>
+    <div class="hero-container">
+        <div class="hero-content">
+            <div class="pill-badge">
+                <i class="fa-solid fa-sparkles"></i> <span data-i18n="hero_badge">Next-Gen Computer Vision</span>
+            </div>
+            <h1 class="hero-title">
+                <span data-i18n="hero_title_1">Detect Crop Diseases</span> <br><span class="highlight" data-i18n="hero_title_highlight">Instantly with AI</span>
+            </h1>
+            <p class="hero-description" data-i18n="hero_desc">
+                Protect your harvest with laboratory-grade plant pathology right in your browser. Upload any leaf photo to pinpoint fungal infections, bacterial blights, and nutritional deficiencies in seconds.
+            </p>
+            <div class="hero-actions">
+                <a href="/index" class="btn-primary" id="hero-cta-analyze">
+                    <i class="fa-solid fa-camera"></i> <span data-i18n="hero_btn_analyze">Start AI Diagnosis</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="hero-visual">
+            <div class="hero-card-preview">
+                <div class="preview-badge-status">
+                    <span style="font-size: 0.85rem; font-weight: 700; color: #a7f3d0; display: flex; align-items: center; gap: 0.5rem;">
+                        <span class="pulse-dot"></span> <span data-i18n="preview_scanner_active">Neural Scanner Active</span>
+                    </span>
+                    <span style="font-size: 0.75rem; color: #94a3b8; background: rgba(0,0,0,0.3); padding: 0.2rem 0.6rem; border-radius: 999px;">
+                        ResNet / ConvNet
+                    </span>
+                </div>
+                
+                <div class="preview-image-box">
+                    <img src="https://images.unsplash.com/photo-1592150621744-aca64f48394a?auto=format&fit=crop&w=600&q=80" alt="Plant Leaf Inspection Preview">
+                    <div class="preview-scan-line"></div>
+                </div>
+                
+                <div class="preview-diagnosis-box">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                        <span style="color: #34d399; font-weight: 700; font-size: 0.95rem;" data-i18n="preview_sample_diag">Tomato : Early Blight Detected</span>
+                        <span style="font-size: 0.8rem; font-weight: 700; color: #fbbf24;" data-i18n="preview_match">99.4% Match</span>
+                    </div>
+                    <p style="font-size: 0.825rem; color: #cbd5e1; margin: 0;" data-i18n="preview_sample_desc">
+                        Target spots and chlorosis detected. Copper fungicide and leaf pruning recommended.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section style="background: white; padding: 4.5rem 1.5rem; border-bottom: 1px solid var(--border);">
+    <div class="content-container" style="padding-top: 0; padding-bottom: 0;">
+        <div class="section-header">
+            <span class="section-subtitle" data-i18n="workflow_subtitle">Seamless Workflow</span>
+            <h2 class="section-title" data-i18n="workflow_title">How the AI Diagnostic Works</h2>
+            <p class="section-desc" data-i18n="workflow_desc">From photo to treatment plan in three intuitive steps.</p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+            <div style="background: #f8fafc; border-radius: var(--radius-lg); padding: 2rem; border: 1px solid var(--border); text-align: center;">
+                <div style="width: 58px; height: 58px; border-radius: 50%; background: #ecfdf5; color: #059669; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
+                    <i class="fa-solid fa-camera"></i>
+                </div>
+                <h4 style="font-size: 1.2rem; margin-bottom: 0.5rem;" data-i18n="step1_title">Capture Leaf</h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem;" data-i18n="step1_desc">
+                    Upload a high-resolution photo or capture directly using your mobile or desktop webcam.
+                </p>
+            </div>
+            
+            <div style="background: #f8fafc; border-radius: var(--radius-lg); padding: 2rem; border: 1px solid var(--border); text-align: center;">
+                <div style="width: 58px; height: 58px; border-radius: 50%; background: #ecfdf5; color: #059669; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
+                    <i class="fa-solid fa-network-wired"></i>
+                </div>
+                <h4 style="font-size: 1.2rem; margin-bottom: 0.5rem;" data-i18n="step2_title">Deep CNN Analysis</h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem;" data-i18n="step2_desc">
+                    Convolutional neural networks analyze lesion morphology, chlorosis patterns, and fungal structures.
+                </p>
+            </div>
+            
+            <div style="background: #f8fafc; border-radius: var(--radius-lg); padding: 2rem; border: 1px solid var(--border); text-align: center;">
+                <div style="width: 58px; height: 58px; border-radius: 50%; background: #ecfdf5; color: #059669; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                </div>
+                <h4 style="font-size: 1.2rem; margin-bottom: 0.5rem;" data-i18n="step3_title">Treatment Protocol</h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem;" data-i18n="step3_desc">
+                    Receive instant pathology breakdown, preventive hygiene steps, and targeted supplement remedies.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Supported Crops Showcase -->
+<section style="padding: 4.5rem 1.5rem; background: var(--bg-main);">
+    <div class="content-container" style="padding-top: 0; padding-bottom: 0;">
+        <div class="section-header">
+            <span class="section-subtitle" data-i18n="crops_subtitle">Broad Agricultural Coverage</span>
+            <h2 class="section-title" data-i18n="crops_title">Supported Crops & Fruits</h2>
+            <p class="section-desc" data-i18n="crops_desc">Our diagnostic models are specifically trained and validated on leaf specimens across these 14 agricultural varieties.</p>
+        </div>
+        
+        <div class="crop-grid">
+            <!-- Apple -->
+            <div class="crop-card">
+                <img src="https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=400&q=80" alt="Apple" class="crop-card-img">
+                <div class="crop-card-body">
+                    <h4 class="crop-card-title" data-i18n="crop_apple">Apple</h4>
+                    <span class="crop-card-status"><i class="fa-solid fa-check-double"></i> <span data-i18n="crop_apple_sub">Scab • Black Rot • Rust</span></span>
+                </div>
+            </div>
+            
+            <!-- Blueberry -->
+            <div class="crop-card">
+                <img src="https://images.unsplash.com/photo-1498557850523-fd3d118b962e?auto=format&fit=crop&w=400&q=80" alt="Blueberry" class="crop-card-img">
+                <div class="crop-card-body">
+                    <h4 class="crop-card-title" data-i18n="crop_blueberry">Blueberry</h4>
+                    <span class="crop-card-status"><i class="fa-solid fa-check-double"></i> <span data-i18n="crop_blueberry_sub">Foliar Vigor Diagnostics</span></span>
+                </div>
+            </div>
+            
+            <!-- Cherry -->
+            <div class="crop-card">
+                <img src="https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=400&q=80" alt="Cherry" class="crop-card-img">
+                <div class="crop-card-body">
+                    <h4 class="crop-card-title" data-i18n="crop_cherry">Cherry</h4>
+                    <span class="crop-card-status"><i class="fa-solid fa-check-double"></i> <span data-i18n="crop_cherry_sub">Powdery Mildew</span></span>
+                </div>
+            </div>
+            
+            <!-- Corn -->
+            <div class="crop-card">
+                <img src="https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=400&q=80" alt="Corn (Maize)" class="crop-card-img">
+                <div class="crop-card-body">
+                    <h4 class="crop-card-title" data-i18n="crop_corn">Corn (Maize)</h4>
+                    <span class="crop-card-status"><i class="fa-solid fa-check-double"></i> <span data-i18n="crop_corn_sub">Gray Leaf Spot • Rust • Blight</span></span>
+                </div>
+            </div>
+            
+            <!-- Grape -->
+            <div class="crop-card">
+                <img src="https://images.unsplash.com/photo-1537640538966-79f369143f8f?auto=format&fit=crop&w=400&q=80" alt="Grape" class="crop-card-img">
+                <div class="crop-card-body">
+                    <h4 class="crop-card-title" data-i18n="crop_grape">Grape</h4>
+                    <span class="crop-card-status"><i class="fa-solid fa-check-double"></i> <span data-i18n="crop_grape_sub">Black Rot • Esca • Leaf Blight</span></span>
+                </div>
+            </div>
+            
+            <!-- Orange -->
+            <div class="crop-card">
+                <img src="https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?auto=format&fit=crop&w=400&q=80" alt="Orange (Citrus)" class="crop-card-img">
+                <div class="crop-card-body">
+                    <h4 class="crop-card-title" data-i18n="crop_orange">Citrus / Orange</h4>
+                    <span class="crop-card-status"><i class="fa-solid fa-check-double"></i> <span data-i18n="crop_orange_sub">Huanglongbing (Citrus Greening)</span></span>
+                </div>
+            </div>
+            
+            <!-- Peach -->
+            <div class="crop-card">
+                <img src="https://images.unsplash.com/photo-1595786872426-68b69324e93f?auto=format&fit=crop&w=400&q=80" alt="Peach" class="crop-card-img">
+                <div class="crop-card-body">
+                    <h4 class="crop-card-title" data-i18n="crop_peach">Peach</h4>
+                    <span class="crop-card-status"><i class="fa-solid fa-check-double"></i> <span data-i18n="crop_peach_sub">Bacterial Spot</span></span>
+                </div>
+            </div>
+            
+            <!-- Bell Pepper -->
+            <div class="crop-card">
+                <img src="https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&w=400&q=80" alt="Bell Pepper" class="crop-card-img">
+                <div class="crop-card-body">
+                    <h4 class="crop-card-title" data-i18n="crop_pepper">Bell Pepper</h4>
+                    <span class="crop-card-status"><i class="fa-solid fa-check-double"></i> <span data-i18n="crop_pepper_sub">Bacterial Spot • Vigor</span></span>
+                </div>
+            </div>
+            
+            <!-- Potato -->
+            <div class="crop-card">
+                <img src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=400&q=80" alt="Potato" class="crop-card-img">
+                <div class="crop-card-body">
+                    <h4 class="crop-card-title" data-i18n="crop_potato">Potato</h4>
+                    <span class="crop-card-status"><i class="fa-solid fa-check-double"></i> <span data-i18n="crop_potato_sub">Early Blight • Late Blight</span></span>
+                </div>
+            </div>
+            
+            <!-- Raspberry -->
+            <div class="crop-card">
+                <img src="https://images.unsplash.com/photo-1577069808021-76a75f10b2df?auto=format&fit=crop&w=400&q=80" alt="Raspberry" class="crop-card-img">
+                <div class="crop-card-body">
+                    <h4 class="crop-card-title" data-i18n="crop_raspberry">Raspberry</h4>
+                    <span class="crop-card-status"><i class="fa-solid fa-check-double"></i> <span data-i18n="crop_raspberry_sub">Foliar Health Screening</span></span>
+                </div>
+            </div>
+            
+            <!-- Soybean -->
+            <div class="crop-card">
+                <img src="https://images.unsplash.com/photo-1599587428803-9d4144365778?auto=format&fit=crop&w=400&q=80" alt="Soybean" class="crop-card-img">
+                <div class="crop-card-body">
+                    <h4 class="crop-card-title" data-i18n="crop_soybean">Soybean</h4>
+                    <span class="crop-card-status"><i class="fa-solid fa-check-double"></i> <span data-i18n="crop_soybean_sub">Crop Health & Purity</span></span>
+                </div>
+            </div>
+            
+            <!-- Squash -->
+            <div class="crop-card">
+                <img src="https://images.unsplash.com/photo-1508747703725-719777637510?auto=format&fit=crop&w=400&q=80" alt="Squash" class="crop-card-img">
+                <div class="crop-card-body">
+                    <h4 class="crop-card-title" data-i18n="crop_squash">Squash</h4>
+                    <span class="crop-card-status"><i class="fa-solid fa-check-double"></i> <span data-i18n="crop_squash_sub">Powdery Mildew</span></span>
+                </div>
+            </div>
+            
+            <!-- Strawberry -->
+            <div class="crop-card">
+                <img src="https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&w=400&q=80" alt="Strawberry" class="crop-card-img">
+                <div class="crop-card-body">
+                    <h4 class="crop-card-title" data-i18n="crop_strawberry">Strawberry</h4>
+                    <span class="crop-card-status"><i class="fa-solid fa-check-double"></i> <span data-i18n="crop_strawberry_sub">Leaf Scorch • Health</span></span>
+                </div>
+            </div>
+            
+            <!-- Tomato -->
+            <div class="crop-card">
+                <img src="https://images.unsplash.com/photo-1592841200221-a6898f307baa?auto=format&fit=crop&w=400&q=80" alt="Tomato" class="crop-card-img">
+                <div class="crop-card-body">
+                    <h4 class="crop-card-title" data-i18n="crop_tomato">Tomato</h4>
+                    <span class="crop-card-status"><i class="fa-solid fa-check-double"></i> <span data-i18n="crop_tomato_sub">10 Distinct Pathology Profiles</span></span>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 3.5rem;">
+            <a href="/index" class="btn-primary" style="font-size: 1.1rem; padding: 1rem 2.25rem;">
+                <i class="fa-solid fa-upload"></i> <span data-i18n="btn_diagnose_now">Diagnose Your Plant Now</span>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock body %}

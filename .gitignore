@@ -1,0 +1,143 @@
+# ==============================================================================
+# FarmAssist: Git Ignore Configuration
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Large Files & Weights (LF / Large File Storage >100MB)
+# ------------------------------------------------------------------------------
+# Model weights and checkpoints exceed GitHub's standard 100MB file limit
+*.pt
+*.pth
+*.bin
+*.onnx
+*.h5
+*.hdf5
+*.ckpt
+*.safetensors
+
+# Large training datasets and archive packages
+Dataset/
+dataset/
+data/
+raw_data/
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# Video & large media captures
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+
+# ------------------------------------------------------------------------------
+# 2. Python Caches & Bytecode
+# ------------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# ------------------------------------------------------------------------------
+# 3. Virtual Environments
+# ------------------------------------------------------------------------------
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+bin/
+lib/
+include/
+
+# ------------------------------------------------------------------------------
+# 4. Jupyter Notebook Artifacts
+# ------------------------------------------------------------------------------
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+*.nbconvert.ipynb
+
+# ------------------------------------------------------------------------------
+# 5. IDE, Editors & Development Tools
+# ------------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+.project
+.pydevproject
+.settings/
+
+# ------------------------------------------------------------------------------
+# 6. Operating System Artifacts
+# ------------------------------------------------------------------------------
+# Windows
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+*~
+.directory
+
+# ------------------------------------------------------------------------------
+# 7. Distribution, Packaging & Builds
+# ------------------------------------------------------------------------------
+build/
+dist/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ------------------------------------------------------------------------------
+# 8. Temporary Files, Scratches, Uploads & Logs
+# ------------------------------------------------------------------------------
+scratch/
+temp/
+tmp/
+*.log
+*.tmp
+*.bak
+*.orig
+web_app/static/uploads/*
+!web_app/static/uploads/Readme.md
+
+# ------------------------------------------------------------------------------
+# 9. Unit Testing & Coverage
+# ------------------------------------------------------------------------------
+.coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+htmlcov/

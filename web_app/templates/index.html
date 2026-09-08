@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+
+{% block pagetitle %}
+AI Plant Pathology Diagnostic Studio
+{% endblock pagetitle %}
+
+{% block body %}
+<div style="background: linear-gradient(180deg, #062b1a 0%, #0c3824 100%); padding: 3.5rem 1.5rem 4.5rem; color: white; text-align: center;">
+    <div style="max-width: 750px; margin: 0 auto;">
+        <span class="pill-badge"><i class="fa-solid fa-microscope"></i> <span data-i18n="studio_header_badge">Neural Vision Engine</span></span>
+        <h1 style="font-size: 2.8rem; font-weight: 800; color: white; margin-bottom: 0.85rem; letter-spacing: -0.02em;" data-i18n="studio_header_title">
+            Plant Leaf Diagnostic Studio
+        </h1>
+        <p style="font-size: 1.15rem; color: #cbd5e1; line-height: 1.6;" data-i18n="studio_header_desc">
+            Capture or upload a clear photo of an infected or suspect crop leaf. Our deep learning classifier analyzes pathogen signatures against 38 agricultural pathology classes.
+        </p>
+    </div>
+</div>
+
+<div class="content-container" style="margin-top: -2.5rem;">
+    <div class="studio-card">
+        <div class="studio-grid">
+            <!-- Left Side: Interactive Upload & Camera Panel -->
+            <div class="studio-upload-panel">
+                <form id="diagnostic-form" action="/submit" method="POST" enctype="multipart/form-data" style="position: relative;">
+                    <!-- Hidden field to pass active user language (en, kn, hi) -->
+                    <input type="hidden" name="lang" id="form-lang-input" value="en">
+
+                    <!-- Drag & Drop Zone -->
+                    <div class="dropzone-area" id="drop-zone">
+                        <input type="file" id="leaf-file-input" name="image" accept="image/*" style="display: none;" required>
+                        
+                        <div class="upload-icon-circle">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+                        
+                        <h4 class="dropzone-title" data-i18n="dropzone_title">Upload Leaf Specimen</h4>
+                        <p class="dropzone-hint" data-i18n="dropzone_hint">Drag & drop your leaf photo here, or browse files</p>
+                        
+                        <div class="studio-actions">
+                            <button type="button" class="btn-upload-trigger" id="browse-btn">
+                                <i class="fa-solid fa-folder-open"></i> <span data-i18n="btn_browse">Browse Photos</span>
+                            </button>
+                            <button type="button" class="btn-camera-trigger" id="open-cam-btn">
+                                <i class="fa-solid fa-camera"></i> <span data-i18n="btn_camera">Use Live Camera</span>
+                            </button>
+                            <button type="button" class="btn-camera-trigger" id="studio-voice-btn">
+                                <i class="fa-solid fa-microphone"></i> <span data-i18n="btn_voice_command">Voice Command</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Live Camera Feed (Hidden by default) -->
+                    <div class="camera-box" id="camera-box">
+                        <video id="camera-feed" autoplay playsinline></video>
+                        <div class="camera-controls">
+                            <button type="button" class="btn-capture" id="capture-btn">
+                                <i class="fa-solid fa-circle-dot"></i> <span data-i18n="btn_snap">Snap Photo</span>
+                            </button>
+                            <button type="button" class="btn-close-cam" id="close-cam-btn">
+                                <i class="fa-solid fa-xmark"></i> <span data-i18n="btn_cancel">Cancel</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Hidden Canvas for capturing camera frame -->
+                    <canvas id="camera-canvas" style="display: none;"></canvas>
+
+                    <!-- Preview Container -->
+                    <div class="preview-container" id="preview-container">
+                        <img id="leaf-preview" src="#" alt="Selected Leaf Preview">
+                        <div style="padding: 0.5rem; background: #f8fafc; text-align: center; border-top: 1px solid var(--border);">
+                            <span id="preview-filename" style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">leaf_specimen.jpg</span>
+                        </div>
+                    </div>
+
+                    <!-- Selected File Pill -->
+                    <div id="file-chosen-status" style="display: none; text-align: center; margin-top: 1rem;">
+                        <span class="file-status-indicator">
+                            <i class="fa-solid fa-circle-check"></i> <span id="file-name-text">Image Loaded</span>
+                        </span>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn-analyze-submit" id="submit-btn" disabled>
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="btn_run_diagnosis">Run AI Diagnosis</span>
+                    </button>
+
+                    <!-- Scanning Overlay for Loading Feedback -->
+                    <div class="scanning-spinner" id="scanning-overlay">
+                        <div class="spinner-leaf"></div>
+                        <h4 style="font-size: 1.15rem; color: var(--primary-hover); margin-bottom: 0.35rem;" data-i18n="scanning_title">Analyzing Specimen...</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);" data-i18n="scanning_subtitle">Comparing against 38 deep neural disease models</p>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Right Side: Capture Best Practices & Agronomy Tips -->
+            <div class="studio-guide-panel">
+                <div>
+                    <h3 class="guide-title">
+                        <i class="fa-solid fa-lightbulb" style="color: #f59e0b;"></i> <span data-i18n="tips_title">Specimen Capture Tips</span>
+                    </h3>
+                    
+                    <ul class="guide-list">
+                        <li class="guide-item">
+                            <div class="guide-icon"><i class="fa-solid fa-sun"></i></div>
+                            <div class="guide-text">
+                                <h5 data-i18n="tip1_title">Natural, Even Lighting</h5>
+                                <p data-i18n="tip1_desc">Photograph in diffuse natural light. Avoid harsh shadows or strong flash reflections on glossy leaf surfaces.</p>
+                            </div>
+                        </li>
+                        
+                        <li class="guide-item">
+                            <div class="guide-icon"><i class="fa-solid fa-crosshairs"></i></div>
+                            <div class="guide-text">
+                                <h5 data-i18n="tip2_title">Focus on Affected Tissue</h5>
+                                <p data-i18n="tip2_desc">Frame the lesion, discoloration, or pustules clearly in center view. Ensure crisp lens focus.</p>
+                            </div>
+                        </li>
+                        
+                        <li class="guide-item">
+                            <div class="guide-icon"><i class="fa-solid fa-leaf"></i></div>
+                            <div class="guide-text">
+                                <h5 data-i18n="tip3_title">Single Leaf Framing</h5>
+                                <p data-i18n="tip3_desc">Place the leaf against a plain or natural background. Avoid crowded bunches or non-foliar debris.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div style="margin-top: 2rem; padding: 1.25rem; background: #ecfdf5; border-radius: var(--radius-md); border: 1px solid #a7f3d0;">
+                    <h5 style="color: #065f46; font-size: 0.95rem; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem;">
+                        <i class="fa-solid fa-shield-halved"></i> <span data-i18n="adv_title">Early Detection Advantage</span>
+                    </h5>
+                    <p style="color: #047857; font-size: 0.85rem; margin: 0;" data-i18n="adv_desc">
+                        Diagnosing symptoms at early infection stages dramatically reduces crop yield loss and allows targeted bio-fungicide treatment before disease spreads across the field.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Diagnostics Interactivity Scripts -->
+<script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('leaf-file-input');
+    const browseBtn = document.getElementById('browse-btn');
+    const openCamBtn = document.getElementById('open-cam-btn');
+    const cameraBox = document.getElementById('camera-box');
+    const cameraFeed = document.getElementById('camera-feed');
+    const captureBtn = document.getElementById('capture-btn');
+    const closeCamBtn = document.getElementById('close-cam-btn');
+    const previewContainer = document.getElementById('preview-container');
+    const leafPreview = document.getElementById('leaf-preview');
+    const previewFilename = document.getElementById('preview-filename');
+    const fileStatus = document.getElementById('file-chosen-status');
+    const fileNameText = document.getElementById('file-name-text');
+    const submitBtn = document.getElementById('submit-btn');
+    const diagnosticForm = document.getElementById('diagnostic-form');
+    const scanningOverlay = document.getElementById('scanning-overlay');
+
+    let streamInstance = null;
+
+    // File selection trigger
+    browseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fileInput.click();
+    });
+
+    dropZone.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    // Drag & Drop handling
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.add('dragover');
+        }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.remove('dragover');
+        }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files && files.length > 0) {
+            handleSelectedFile(files[0]);
+            fileInput.files = files;
+        }
+    });
+
+    fileInput.addEventListener('change', function() {
+        if (this.files && this.files.length > 0) {
+            handleSelectedFile(this.files[0]);
+        }
+    });
+
+    function handleSelectedFile(file) {
+        if (!file.type.startsWith('image/')) {
+            alert('Please select a valid image file (JPG, PNG, JPEG, WEBP).');
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            leafPreview.src = e.target.result;
+            previewContainer.style.display = 'block';
+            previewFilename.textContent = file.name;
+            fileNameText.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+            fileStatus.style.display = 'block';
+            submitBtn.disabled = false;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Camera Stream Management
+    openCamBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        try {
+            streamInstance = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'environment', width: { ideal: 640 }, height: { ideal: 480 } }
+            });
+            cameraFeed.srcObject = streamInstance;
+            cameraBox.style.display = 'block';
+            openCamBtn.style.display = 'none';
+        } catch (err) {
+            alert('Unable to access camera. Please allow camera permissions or upload an image file directly.');
+            console.error('Camera error:', err);
+        }
+    });
+
+    closeCamBtn.addEventListener('click', () => {
+        stopCamera();
+    });
+
+    function stopCamera() {
+        if (streamInstance) {
+            streamInstance.getTracks().forEach(track => track.stop());
+            streamInstance = null;
+        }
+        cameraBox.style.display = 'none';
+        openCamBtn.style.display = 'inline-flex';
+    }
+
+    captureBtn.addEventListener('click', () => {
+        const canvas = document.getElementById('camera-canvas');
+        canvas.width = cameraFeed.videoWidth || 640;
+        canvas.height = cameraFeed.videoHeight || 480;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(cameraFeed, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob((blob) => {
+            const file = new File([blob], 'captured_leaf.jpg', { type: 'image/jpeg' });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+
+            handleSelectedFile(file);
+            stopCamera();
+        }, 'image/jpeg', 0.95);
+    });
+
+    // Form Submission & Loading Overlay
+    diagnosticForm.addEventListener('submit', () => {
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert('Please select or capture an image first.');
+            return false;
+        }
+        // Set selected language to submit
+        const currentLang = localStorage.getItem('farmassist_lang') || localStorage.getItem('flora_lang') || 'en';
+        document.getElementById('form-lang-input').value = currentLang;
+
+        scanningOverlay.style.display = 'flex';
+        submitBtn.disabled = true;
+    });
+</script>
+{% endblock body %}

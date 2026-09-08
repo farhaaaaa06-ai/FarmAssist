@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block pagetitle %}
+Diagnostic Support & Agronomy Guides
+{% endblock pagetitle %}
+
+{% block body %}
+<!-- Page Header -->
+<div style="background: linear-gradient(180deg, #062b1a 0%, #0c3824 100%); padding: 3.5rem 1.5rem 4.5rem; color: white; text-align: center;">
+    <div style="max-width: 750px; margin: 0 auto;">
+        <span class="pill-badge"><i class="fa-solid fa-headset"></i> <span data-i18n="contact_badge">Agronomy Assistance</span></span>
+        <h1 style="font-size: 2.8rem; font-weight: 800; color: white; margin-bottom: 0.85rem; letter-spacing: -0.02em;" data-i18n="contact_title">
+            Support & Diagnostic Center
+        </h1>
+        <p style="font-size: 1.15rem; color: #cbd5e1; line-height: 1.6;" data-i18n="contact_desc">
+            Have questions regarding leaf disease identification, model accuracy, or recommended treatment protocols? Our diagnostics team and FAQ guides are here to assist.
+        </p>
+    </div>
+</div>
+
+<div class="content-container" style="margin-top: -2.5rem;">
+    <div class="contact-grid">
+        <!-- Contact Form Card -->
+        <div class="contact-card">
+            <h3 style="font-size: 1.45rem; color: var(--text-heading); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.6rem;">
+                <i class="fa-solid fa-envelope-open-text" style="color: var(--primary);"></i> <span data-i18n="form_title">Send Diagnostic Inquiry</span>
+            </h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem;" data-i18n="form_subtitle">
+                Submit your inquiry or feedback on classification results.
+            </p>
+            
+            <form id="inquiry-form" onsubmit="handleInquirySubmit(event)">
+                <div class="form-group">
+                    <label class="form-label" for="inq-name" data-i18n="form_name_label">Your Full Name</label>
+                    <input type="text" id="inq-name" class="form-control" placeholder="e.g. John Doe" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="inq-email" data-i18n="form_email_label">Email Address</label>
+                    <input type="email" id="inq-email" class="form-control" placeholder="name@domain.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="inq-topic" data-i18n="form_topic_label">Subject / Crop Category</label>
+                    <select id="inq-topic" class="form-control" required>
+                        <option value="" disabled selected data-i18n="form_select_placeholder">Select topic...</option>
+                        <option value="accuracy" data-i18n="form_topic_acc">Model Accuracy or Misclassification</option>
+                        <option value="crops" data-i18n="form_topic_crops">Request Additional Crop Variety</option>
+                        <option value="treatment" data-i18n="form_topic_treatment">Treatment & Supplement Advisory</option>
+                        <option value="technical" data-i18n="form_topic_tech">Technical Support / Bug Report</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="inq-message" data-i18n="form_message_label">Message Details</label>
+                    <textarea id="inq-message" rows="4" class="form-control" placeholder="Describe the plant symptoms or your inquiry..." required></textarea>
+                </div>
+                
+                <button type="submit" class="btn-primary" id="send-inq-btn" style="width: 100%; justify-content: center;">
+                    <i class="fa-solid fa-paper-plane"></i> <span data-i18n="form_btn_submit">Submit Inquiry</span>
+                </button>
+            </form>
+            
+            <div id="inquiry-alert" style="display: none; margin-top: 1.5rem; padding: 1rem; border-radius: var(--radius-md); background: #ecfdf5; border: 1px solid #10b981; color: #065f46; font-size: 0.9rem;">
+                <i class="fa-solid fa-circle-check"></i> <span data-i18n="form_success">Thank you! Your inquiry has been received. Our agronomy team will review your query.</span>
+            </div>
+        </div>
+
+        <!-- FAQ & Technical Specs -->
+        <div class="contact-card" style="background: #fafcfb;">
+            <h3 style="font-size: 1.45rem; color: var(--text-heading); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem;">
+                <i class="fa-solid fa-circle-question" style="color: var(--primary);"></i> <span data-i18n="faq_title">Diagnostic FAQs</span>
+            </h3>
+            
+            <div class="faq-item">
+                <h5 class="faq-question">
+                    <span data-i18n="faq1_q">How accurate is the AI diagnosis?</span>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem; color: #94a3b8;"></i>
+                </h5>
+                <p class="faq-answer" data-i18n="faq1_a">
+                    The underlying Deep Convolutional Neural Network achieves 95% validation accuracy across standard benchmark datasets comprising 38 distinct foliar health and disease classes.
+                </p>
+            </div>
+            
+            <div class="faq-item">
+                <h5 class="faq-question">
+                    <span data-i18n="faq2_q">What image quality is needed?</span>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem; color: #94a3b8;"></i>
+                </h5>
+                <p class="faq-answer" data-i18n="faq2_a">
+                    A standard smartphone camera in good lighting is sufficient. For optimal results, ensure the leaf fills the majority of the frame with lesions in clear focus without motion blur.
+                </p>
+            </div>
+            
+            <div class="faq-item">
+                <h5 class="faq-question">
+                    <span data-i18n="faq3_q">Are organic treatment alternatives provided?</span>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem; color: #94a3b8;"></i>
+                </h5>
+                <p class="faq-answer" data-i18n="faq3_a">
+                    Yes. Each diagnostic breakdown provides cultural sanitation methods, preventive biological practices, and both organic copper/sulfur and targeted bio-fungicide remedies.
+                </p>
+            </div>
+            
+            <div class="faq-item">
+                <h5 class="faq-question">
+                    <span data-i18n="faq4_q">Can I use this in field conditions offline?</span>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem; color: #94a3b8;"></i>
+                </h5>
+                <p class="faq-answer" data-i18n="faq4_a">
+                    Once the model weights are downloaded locally, inference executes rapidly on your local CPU or GPU without requiring external cloud API calls.
+                </p>
+            </div>
+
+            <div style="margin-top: 2rem; padding: 1.25rem; background: white; border-radius: var(--radius-md); border: 1px solid var(--border);">
+                <h5 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-heading);">
+                    <i class="fa-solid fa-sliders" style="color: var(--primary);"></i> <span data-i18n="specs_title">Neural Engine Specs</span>
+                </h5>
+                <ul style="list-style: none; font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.4rem;">
+                    <li data-i18n="spec_arch"><strong>Architecture:</strong> 4-Stage Deep Convolutional Network</li>
+                    <li data-i18n="spec_res"><strong>Input Resolution:</strong> 224 &times; 224 RGB</li>
+                    <li data-i18n="spec_classes"><strong>Pathology Classes:</strong> 39 (38 Foliar + 1 Background)</li>
+                    <li data-i18n="spec_framework"><strong>Inference Framework:</strong> PyTorch &bull; TorchVision</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function handleInquirySubmit(e) {
+        e.preventDefault();
+        const alertBox = document.getElementById('inquiry-alert');
+        const form = document.getElementById('inquiry-form');
+        alertBox.style.display = 'block';
+        form.reset();
+        setTimeout(() => {
+            alertBox.style.display = 'none';
+        }, 6000);
+    }
+
+    // Toggle FAQ answers
+    document.querySelectorAll('.faq-question').forEach(q => {
+        q.addEventListener('click', () => {
+            const answer = q.nextElementSibling;
+            const isVisible = answer.style.display === 'block';
+            answer.style.display = isVisible ? 'none' : 'block';
+            const icon = q.querySelector('i');
+            if (icon) {
+                icon.className = isVisible ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-up';
+            }
+        });
+    });
+</script>
+{% endblock body %}
