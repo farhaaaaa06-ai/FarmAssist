@@ -20,6 +20,8 @@ Dataset/
 dataset/
 data/
 raw_data/
+vosk-model/
+tts-model/
 *.zip
 *.tar
 *.tar.gz

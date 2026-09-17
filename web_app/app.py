@@ -12,7 +12,9 @@ from PIL import Image
 import torch
 import torchvision.transforms.functional as TF
 from werkzeug.utils import secure_filename
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, redirect, render_template, request, url_for, jsonify
+import uuid
+import threading
 
 # Ensure execution context includes current module directory
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -62,6 +64,23 @@ if os.path.exists(MODEL_WEIGHTS_PATH):
         print(f"[ModelEngine] Error loading checkpoint weights: {model_err}")
 else:
     print(f"[ModelEngine] Warning: Model checkpoint missing at {MODEL_WEIGHTS_PATH}")
+
+# ----------------------------------------------------------------------
+# 2.5. Voice Command Engine Initialization (Vosk)
+# ----------------------------------------------------------------------
+VOSK_MODEL_PATH = os.path.join(APP_ROOT, 'vosk-model')
+speech_model = None
+
+try:
+    import vosk
+    if os.path.exists(VOSK_MODEL_PATH):
+        vosk.SetLogLevel(-1)
+        speech_model = vosk.Model(VOSK_MODEL_PATH)
+        print(f"[VoiceEngine] Offline Vosk model initialized successfully from {VOSK_MODEL_PATH}")
+    else:
+        print(f"[VoiceEngine] Warning: Vosk model missing at {VOSK_MODEL_PATH}")
+except ImportError:
+    print("[VoiceEngine] Warning: vosk package not installed. Offline voice commands unavailable.")
 
 def evaluate_specimen_pathology(specimen_filepath):
     """
@@ -187,6 +206,32 @@ def process_diagnostic_submission():
         )
 
     return redirect(url_for('scan_leaf_studio'))
+
+@app.route('/voice-command', methods=['POST'])
+def process_voice_command():
+    """
+    Receives raw 16-bit PCM audio from the frontend, decodes it completely offline
+    using Vosk, and returns the transcribed text.
+    """
+    if not speech_model:
+        return {"text": "", "error": "Offline speech model not loaded."}
+    
+    try:
+        import vosk
+        pcm_data = request.data
+        if not pcm_data:
+            return {"text": "", "error": "No audio data received."}
+            
+        rec = vosk.KaldiRecognizer(speech_model, 16000)
+        # AcceptWaveform requires bytes
+        rec.AcceptWaveform(pcm_data)
+        # We also need FinalResult for any remaining audio in the buffer
+        final_res = json.loads(rec.FinalResult())
+        
+        return {"text": final_res.get("text", "")}
+    except Exception as e:
+        print(f"[VoiceEngine] Error processing voice command: {e}")
+        return {"text": "", "error": str(e)}
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
