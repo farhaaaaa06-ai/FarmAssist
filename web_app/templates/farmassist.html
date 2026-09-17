@@ -23,6 +23,9 @@ FarmAssist - Crop Care & Remedy Advisor
         <div class="search-input-box">
             <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8;"></i>
             <input type="text" id="farmassist-search-input" placeholder="Search remedies by disease, crop, or chemical active..." data-i18n-placeholder="farmassist_search_placeholder">
+            <button type="button" class="search-mic-btn" id="search-voice-btn" title="Voice Search / ಧ್ವನಿ ಹುಡುಕಾಟ / आवाज़ खोज" aria-label="Voice Search">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
         </div>
         
         <div class="farmassist-tabs market-tabs">
@@ -132,5 +135,24 @@ FarmAssist - Crop Care & Remedy Advisor
             filterProducts();
         });
     });
+
+    // Check URL parameters for voice queries (e.g. /farmassist?search=tomato)
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialQuery = urlParams.get('search') || urlParams.get('q');
+    if (initialQuery && searchInput) {
+        searchInput.value = initialQuery;
+        filterProducts();
+    }
+
+    // Attach search mic button to in-input voice dictation
+    const searchMicBtn = document.getElementById('search-voice-btn');
+    if (searchMicBtn && searchInput) {
+        searchMicBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (window.VoiceAssistant) {
+                window.VoiceAssistant.dictateToInput(searchInput, searchMicBtn);
+            }
+        });
+    }
 </script>
 {% endblock body %}

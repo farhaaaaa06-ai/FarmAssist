@@ -52,7 +52,12 @@ Diagnostic Support & Agronomy Guides
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label" for="inq-message" data-i18n="form_message_label">Message Details</label>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                        <label class="form-label" for="inq-message" data-i18n="form_message_label" style="margin-bottom: 0;">Message Details</label>
+                        <button type="button" class="btn-secondary input-mic-btn" id="msg-voice-btn" style="padding: 0.2rem 0.65rem; font-size: 0.78rem; border-radius: 999px; gap: 0.35rem; display: inline-flex; align-items: center;" title="Dictate Message / ಧ್ವನಿ ಇನ್‌ಪುಟ್ / आवाज़ इनपुट">
+                            <i class="fa-solid fa-microphone" style="color: #10b981;"></i> <span>Voice Input</span>
+                        </button>
+                    </div>
                     <textarea id="inq-message" rows="4" class="form-control" placeholder="Describe the plant symptoms or your inquiry..." required></textarea>
                 </div>
                 
@@ -151,5 +156,17 @@ Diagnostic Support & Agronomy Guides
             }
         });
     });
+
+    // Voice dictation for inquiry message
+    const msgVoiceBtn = document.getElementById('msg-voice-btn');
+    const msgInput = document.getElementById('inq-message');
+    if (msgVoiceBtn && msgInput) {
+        msgVoiceBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (window.VoiceAssistant) {
+                window.VoiceAssistant.dictateToInput(msgInput, msgVoiceBtn);
+            }
+        });
+    }
 </script>
 {% endblock body %}

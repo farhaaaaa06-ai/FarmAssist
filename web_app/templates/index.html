@@ -37,16 +37,20 @@ AI Plant Pathology Diagnostic Studio
                         <h4 class="dropzone-title" data-i18n="dropzone_title">Upload Leaf Specimen</h4>
                         <p class="dropzone-hint" data-i18n="dropzone_hint">Drag & drop your leaf photo here, or browse files</p>
                         
-                        <div class="studio-actions">
+                        <div class="studio-actions" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem;">
                             <button type="button" class="btn-upload-trigger" id="browse-btn">
                                 <i class="fa-solid fa-folder-open"></i> <span data-i18n="btn_browse">Browse Photos</span>
                             </button>
                             <button type="button" class="btn-camera-trigger" id="open-cam-btn">
                                 <i class="fa-solid fa-camera"></i> <span data-i18n="btn_camera">Use Live Camera</span>
                             </button>
-                            <button type="button" class="btn-camera-trigger" id="studio-voice-btn">
-                                <i class="fa-solid fa-microphone"></i> <span data-i18n="btn_voice_command">Voice Command</span>
+                            <button type="button" class="btn-primary" id="voice-cmd-btn" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.4); border-radius: var(--radius-md); padding: 0.75rem 1.25rem; font-weight: 600; width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s;">
+                                <i class="fa-solid fa-microphone"></i> <span data-i18n="btn_voice_cmd">Enable Voice Commands</span>
                             </button>
+                        </div>
+                        
+                        <div id="voice-status" style="display: none; margin-top: 1rem; color: #8b5cf6; font-size: 0.9rem; font-weight: 500;">
+                            <i class="fa-solid fa-ear-listen fa-fade"></i> Listening for "open camera", "take photo", "diagnose"...
                         </div>
                     </div>
                     
@@ -283,5 +287,92 @@ AI Plant Pathology Diagnostic Studio
         scanningOverlay.style.display = 'flex';
         submitBtn.disabled = true;
     });
+
+    // Offline Voice Command STT Logic
+    const voiceCmdBtn = document.getElementById('voice-cmd-btn');
+    const voiceStatus = document.getElementById('voice-status');
+    let recognition = null;
+    let isListening = false;
+
+    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = false;
+        
+        recognition.onstart = function() {
+            isListening = true;
+            voiceStatus.style.display = 'block';
+            voiceCmdBtn.innerHTML = '<i class="fa-solid fa-microphone-slash"></i> <span data-i18n="btn_stop_voice">Stop Voice Commands</span>';
+            voiceCmdBtn.style.background = 'rgba(239, 68, 68, 0.2)';
+            voiceCmdBtn.style.color = '#ef4444';
+            voiceCmdBtn.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+        };
+
+        recognition.onresult = function(event) {
+            const last = event.results.length - 1;
+            const command = event.results[last][0].transcript.toLowerCase().trim();
+            console.log("Voice Command Recognized: ", command);
+            
+            if (command.includes('browse') || command.includes('upload') || command.includes('choose')) {
+                browseBtn.click();
+            } else if (command.includes('camera') || command.includes('open cam')) {
+                openCamBtn.click();
+            } else if (command.includes('snap') || command.includes('take photo') || command.includes('capture')) {
+                if (cameraBox.style.display === 'block') {
+                    captureBtn.click();
+                }
+            } else if (command.includes('diagnose') || command.includes('analyze') || command.includes('submit')) {
+                if (!submitBtn.disabled) {
+                    diagnosticForm.dispatchEvent(new Event('submit'));
+                    diagnosticForm.submit();
+                }
+            } else if (command.includes('cancel') || command.includes('close')) {
+                if (cameraBox.style.display === 'block') {
+                    closeCamBtn.click();
+                }
+            }
+        };
+
+        recognition.onend = function() {
+            if (isListening) {
+                // Auto-restart to keep listening
+                recognition.start();
+            } else {
+                voiceStatus.style.display = 'none';
+                voiceCmdBtn.innerHTML = '<i class="fa-solid fa-microphone"></i> <span data-i18n="btn_voice_cmd">Enable Voice Commands</span>';
+                voiceCmdBtn.style.background = 'rgba(139, 92, 246, 0.2)';
+                voiceCmdBtn.style.color = '#8b5cf6';
+                voiceCmdBtn.style.borderColor = 'rgba(139, 92, 246, 0.4)';
+            }
+        };
+
+        recognition.onerror = function(event) {
+            console.error("Speech Recognition Error:", event.error);
+        };
+
+        voiceCmdBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            if (isListening) {
+                isListening = false;
+                recognition.stop();
+            } else {
+                // Set language dynamically
+                const activeLang = localStorage.getItem('farmassist_lang') || localStorage.getItem('flora_lang') || 'en';
+                if (activeLang === 'hi') {
+                    recognition.lang = 'hi-IN';
+                } else if (activeLang === 'kn') {
+                    recognition.lang = 'kn-IN';
+                } else {
+                    recognition.lang = 'en-US';
+                }
+                recognition.start();
+            }
+        });
+    } else {
+        voiceCmdBtn.style.display = 'none';
+        console.warn("Speech Recognition API not supported in this browser.");
+    }
 </script>
 {% endblock body %}

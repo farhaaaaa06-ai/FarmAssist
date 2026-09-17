@@ -32,7 +32,10 @@ Diagnostic Result - {{ title }}
             </p>
         </div>
         
-        <div>
+        <div style="display: flex; gap: 0.75rem;">
+            <button id="tts-btn" class="btn-primary" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); padding: 0.5rem 1rem; border-radius: var(--radius-md); cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; font-family: inherit; font-size: 0.95rem;">
+                <i class="fa-solid fa-volume-high"></i> <span data-i18n="res_btn_read_aloud">Read Aloud</span>
+            </button>
             <a href="/index" class="btn-secondary" style="background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3);">
                 <i class="fa-solid fa-rotate-left"></i> <span data-i18n="res_btn_another">Diagnose Another Leaf</span>
             </a>
@@ -144,6 +147,12 @@ Diagnostic Result - {{ title }}
 
     // Update Report Text according to Active Language
     function updateReportLanguage(lang) {
+        if (window.speechSynthesis) {
+            window.speechSynthesis.cancel(); // Stop reading if language changes
+            if (ttsBtn) ttsBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> <span data-i18n="res_btn_read_aloud">Read Aloud</span>';
+            isSpeaking = false;
+        }
+
         if (reportsPayload && reportsPayload[lang]) {
             const data = reportsPayload[lang];
             if (titleEl) titleEl.textContent = data.name;
@@ -153,6 +162,66 @@ Diagnostic Result - {{ title }}
             if (simageEl && data.simage) simageEl.src = data.simage;
             if (buyLinkEl && data.buy_link) buyLinkEl.href = data.buy_link;
         }
+    }
+
+    const ttsBtn = document.getElementById('tts-btn');
+    let isSpeaking = false;
+
+    // Text-to-Speech logic
+    function speakDiagnosis() {
+        if (!window.speechSynthesis) {
+            alert("Your browser does not support text-to-speech.");
+            return;
+        }
+        
+        if (isSpeaking) {
+            window.speechSynthesis.cancel();
+            isSpeaking = false;
+            ttsBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> <span data-i18n="res_btn_read_aloud">Read Aloud</span>';
+            return;
+        }
+
+        const titleText = titleEl ? titleEl.textContent : '';
+        const descText = descEl ? descEl.textContent : '';
+        const preventText = preventEl ? preventEl.textContent : '';
+        
+        // Strip markdown-like or excessive newlines for smoother reading
+        const cleanDesc = descText.replace(/\n+/g, ' ');
+        const cleanPrevent = preventText.replace(/\n+/g, ' ');
+        const textToRead = `${titleText}. ${cleanDesc}. Prevention and management: ${cleanPrevent}.`;
+
+        const utterance = new SpeechSynthesisUtterance(textToRead);
+        
+        // Try to match the active language for TTS
+        const activeLang = localStorage.getItem('farmassist_lang') || localStorage.getItem('flora_lang') || 'en';
+        if (activeLang === 'hi') {
+            utterance.lang = 'hi-IN';
+        } else if (activeLang === 'kn') {
+            utterance.lang = 'kn-IN';
+        } else {
+            utterance.lang = 'en-US';
+        }
+
+        utterance.onstart = () => {
+            isSpeaking = true;
+            ttsBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> <span data-i18n="res_btn_stop_reading">Stop Reading</span>';
+        };
+
+        utterance.onend = () => {
+            isSpeaking = false;
+            ttsBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> <span data-i18n="res_btn_read_aloud">Read Aloud</span>';
+        };
+
+        utterance.onerror = () => {
+            isSpeaking = false;
+            ttsBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> <span data-i18n="res_btn_read_aloud">Read Aloud</span>';
+        };
+
+        window.speechSynthesis.speak(utterance);
+    }
+
+    if (ttsBtn) {
+        ttsBtn.addEventListener('click', speakDiagnosis);
     }
 
     // Hook into global language changes
